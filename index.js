@@ -3,39 +3,29 @@ const app = express();
 const cors = require('cors');
 const { config } = require("./config");
 const PORT = config.port;
-const Contenedor = require("./routes/productos");
-const db_obj = require("./config/db");
-const db = db_obj.client;
-let contenedor = new Contenedor(db)
+let { Server: HttpServer } = require("http")
+const httpServer = new HttpServer(app);
+const productosRoute = require("./routes/Productos/index");
+const chatRoutes = require("./routes/Chat/index");
+const path = require("path")
+let Socket = require("./routes/Chat/chat")
+let socket = new Socket(httpServer)
 
 
 app.use(cors(config.cors));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.post("/productos/createDB", (req, res) => {
-    contenedor.CreateDB();
-    res.send("Se creo la DB productos")
-})
-
-app.post("/productos", (req, res) => {
-    contenedor.addProductos();
-    res.send("Se añadieron productos a la DB")
-})
-
-app.get("/productos", (req, res) => {
-    contenedor.getAll(res)
-})
-
-app.get("/productosRandom", (req, res) => {
-    contenedor.getByid(1, res)
-})
+app.use(express.static('./public'))
 
 
+app.set("views", path.join(__dirname, "views", "ejs"));
+app.set("view engine", "ejs");
 
 
+productosRoute(app)
+chatRoutes(socket)
 
-app.listen(PORT, () => {
+
+httpServer.listen(PORT, () => {
     console.log(`http://localhost:${PORT}`);
 });

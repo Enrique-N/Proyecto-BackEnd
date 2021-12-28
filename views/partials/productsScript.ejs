@@ -1,0 +1,98 @@
+<script>
+    let socket = io();
+    let inputTittle = document.getElementById("tittle")
+    let inputPrecio = document.getElementById("price")
+    let inputThumbail = document.getElementById("thumb")
+    let button = document.getElementById("button_listen")
+    let addHeader = true;
+    button.addEventListener("click", handleEvent)
+    function handleEvent(e) {
+        let res = {
+            tittle: inputTittle.value,
+            precio: inputPrecio.value,
+            thumbail: inputThumbail.value
+        }
+        socket.emit("infoProductos", res)
+        document.getElementById("form").reset()
+    }
+    socket.on("mi_sala", data => {
+        if (addHeader) {
+            let inner = `<table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Producto</th>
+                                    <th scope="col">Precio</th>
+                                    <th scope="col">imagen</th>
+                                </tr>
+                            </thead>
+                            <tbody id="text_container">
+    
+                            </tbody>
+                        </table>`
+            let text = document.getElementById("contenedor_addProduct")
+            text.innerHTML = inner;
+            addHeader = false;
+        }
+        let addBody = ``
+        data.forEach(items => {
+            addBody += `
+                        <tr >
+                                <th scope="row">
+                                    ${items.id}
+                                </th>
+                                <td>
+                                    ${items.tittle}
+                                </td>
+                                <td>
+                                    $${items.precio}
+                                </td>
+                                <td><img src=${items.thumbail} alt="" width="30px" height="30px"></td>
+                         </tr>`
+        })
+        let contenedor = document.getElementById("text_container")
+        contenedor.innerHTML = addBody;
+    })
+
+    socket.on("init", data => {
+        if (data.length > 0) {
+            if (addHeader) {
+                let inner = `<table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Producto</th>
+                        <th scope="col">Precio</th>
+                        <th scope="col">imagen</th>
+                        </tr>
+                        </thead>
+                        <tbody id="text_container">
+                            
+                            </tbody>
+                            </table>`
+                let text = document.getElementById("contenedor_addProduct")
+                text.innerHTML = inner;
+                addHeader = false;
+            }
+            let addBody = ""
+            data.forEach(items => {
+                addBody += `
+                            <tr >
+                                    <th scope="row">
+                                        ${items.id}
+                                    </th>
+                                    <td>
+                                        ${items.tittle}
+                                    </td>
+                                    <td>
+                                        $${items.precio}
+                                    </td>
+                                    <td><img src=${items.thumbail} alt="" width="30px" height="30px"></td>
+                             </tr>`
+            })
+            let contenedor = document.getElementById("text_container")
+            contenedor.innerHTML = addBody;
+        }
+    })
+
+</script>

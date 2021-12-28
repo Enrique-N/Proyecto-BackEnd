@@ -11,7 +11,7 @@ let mysql = knex({
 
 let sqlite = knex({
     client: 'sqlite3',
-    connection: { filename: './DB/mydb.sqlite' }
+    connection: { filename: './DB/ecommerce.sqlite' }
 })
 
 class Database {

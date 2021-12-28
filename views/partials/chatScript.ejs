@@ -1,0 +1,63 @@
+<script>
+    let student = null;
+    let input = document.getElementById("inputtext");
+    let parrafo = document.getElementById("contenedor_texto");
+    let button_chat = document.getElementById("sendSocket");
+    let form_data_user = document.getElementById("data_user");
+    let container_chat = document.getElementById("container_chat");
+    let user_list = document.getElementById("user_list");
+    form_data_user.addEventListener("submit", e => {
+        e.preventDefault();
+        student = {
+            name: e.target[0].value,
+            email: e.target[1].value
+        }
+        if (student.name == "" || student.email == "") {
+            window.location.reload();
+        }
+        socket = io();
+        socket.emit("addUser", student);
+        container_chat.classList = "active";
+        readSockets();
+    });
+
+    function readSockets() {
+        loadChat();
+        socket.on("listenserver", data => {
+            let inner = ``;
+            data.forEach(element => {
+                inner += `<b>${element.email} <span style=color:blue>[${element.date}]:</span></b><span style=color:green>${element.mensaje}</span>  </br>`;
+            });
+            parrafo.innerHTML = inner;
+        });
+
+    }
+    function loadChat() {
+        socket.on("init_chat", data => {
+            let inner = ``;
+            data.forEach(element => {
+                inner += `<b>${element.email} <span style=color:blue>[${element.date}]:</span> </b><span style=color:green>${element.mensaje}</span>  </br>`;
+            });
+            parrafo.innerHTML = inner;
+        });
+        socket.on("loadUsers", data => {
+            let inner = ``;
+            data.forEach(element => {
+                let status = element.active ? "(conectado)" : "(desconectado)";
+                inner += `<li><b>${element.email}:</b> ${status}</li>`;
+            });
+            user_list.innerHTML = inner;
+        });
+    }
+
+    button_chat.addEventListener("click", e => {
+        let date = new Date();
+        let sendMessagge = {
+            ...student,
+            mensaje: input.value,
+            date: date.toLocaleString("en-US")
+        }
+        socket.emit("mensaje", sendMessagge);
+        input.value = "";
+    })
+</script>
