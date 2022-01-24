@@ -1,4 +1,8 @@
+let express = require('express');
+let mainRoute = express.Router()
 
-module.exports = (socket) => {
-    socket.init()
-}
+mainRoute.get("/", (req, res) => {
+    res.render("index",)
+})
+
+module.exports = mainRoute;

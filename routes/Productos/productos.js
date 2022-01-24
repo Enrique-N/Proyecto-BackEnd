@@ -1,47 +1,55 @@
-const db_obj = require("./../../config/db");
-const db = db_obj.client;
+let { db: firebaseDB } = require("../../utils/firebase")
 
 class Contenedor {
     constructor() {
-        this.db = db
+        this.contador = 0
     }
-    async CreateDB() {
+    async getAll(res) {
         try {
-            await this.db.schema.createTable("Productos", table => {
-                table.increments("id").primary(),
-                    table.string("tittle"),
-                    table.float("precio"),
-                    table.string("thumbail")
+            let data = await firebaseDB.collection('productos').get()
+            let doc = data.docs;
+            let items = []
+            doc.map((doc) => {
+                items.push(doc.data())
             })
-            await this.db.schema.createTable("ecommerce", table => {
-                table.string("name"),
-                    table.string("email"),
-                    table.string("mensaje"),
-                    table.string('date')
+            items.sort((a, b) => {
+                if (a.id > b.id) {
+                    return 1;
+                }
+                if (a.id < b.id) {
+                    return -1;
+                }
+                return 0;
             })
-        } catch (error) {
-            console.log(error);
-        }
-    } async getAll(res) {
-        try {
-            let response = await this.db.from("Productos");
-            res.json(response);
+            return res.send(items)
         } catch (error) {
             console.log(error);
         }
     } async addProductos(item) {
         try {
-            data.push({
-                ...item
+            this.contador++
+            let productos = firebaseDB.collection('productos');
+            await productos.doc().set({
+                ...item,
+                id: this.contador
             })
-            await this.db.from("Productos").insert(item);
         } catch (error) {
             console.log(error);
         }
     } async getByid(id, res) {
         try {
-            let response = await this.db.from("Productos").where("id", "=", id);
-            res.send(response);
+            let data = await firebaseDB.collection('productos').get()
+            let doc = data.docs;
+            let items = []
+            doc.map((doc) => {
+                items.push(doc.data())
+            })
+            let getItem = items.filter(item => item.id === parseFloat(id))
+            if (getItem) {
+                return res.send(getItem)
+            } else {
+                return res.send({ error: "Producto no encontrado" })
+            }
         } catch (error) {
             console.log(error);
         }

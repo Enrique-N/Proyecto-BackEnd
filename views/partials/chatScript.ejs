@@ -1,22 +1,27 @@
 <script>
-    let student = null;
+    let author = null;
     let input = document.getElementById("inputtext");
     let parrafo = document.getElementById("contenedor_texto");
     let button_chat = document.getElementById("sendSocket");
     let form_data_user = document.getElementById("data_user");
     let container_chat = document.getElementById("container_chat");
     let user_list = document.getElementById("user_list");
+    let normlizr_contenedor = document.getElementById('normlizr')
     form_data_user.addEventListener("submit", e => {
         e.preventDefault();
-        student = {
-            name: e.target[0].value,
-            email: e.target[1].value
+        author = {
+            nombre: e.target[0].value,
+            id: e.target[1].value,
+            apellido: e.target[2].value,
+            edad: e.target[3].value,
+            alias: e.target[4].value,
+            avatar: e.target[5].value
         }
-        if (student.name == "" || student.email == "") {
+        if (author.nombre == "" || author.id == "" || author.apellido == "" || author.edad == "" || author.alias == "" || author.avatar == "") {
             window.location.reload();
         }
         socket = io();
-        socket.emit("addUser", student);
+        socket.emit("addUser", author);
         container_chat.classList = "active";
         readSockets();
     });
@@ -26,17 +31,21 @@
         socket.on("listenserver", data => {
             let inner = ``;
             data.forEach(element => {
-                inner += `<b>${element.email} <span style=color:blue>[${element.date}]:</span></b><span style=color:green>${element.mensaje}</span>  </br>`;
+                inner += `<img src=${element.author.avatar} width="30px" height="30px"><b>${element.author.id} <span style=color:blue>[${element.date}]:</span></b><span style=color:green>${element.mensaje}</span>  </br>`;
             });
             parrafo.innerHTML = inner;
         });
-
+        socket.on('normalizer_data', data => {
+            let inner = ``;
+            inner = `<h1>Porcentaje de comprension %${Number.parseFloat(data).toFixed(2)}</h1>`;
+            normlizr_contenedor.innerHTML = inner;
+        })
     }
     function loadChat() {
         socket.on("init_chat", data => {
             let inner = ``;
             data.forEach(element => {
-                inner += `<b>${element.email} <span style=color:blue>[${element.date}]:</span> </b><span style=color:green>${element.mensaje}</span>  </br>`;
+                inner += `<img src=${element.author.avatar} width="30px" height="30px"><b>${element.author.id} <span style=color:blue>[${element.date}]:</span> </b><span style=color:green>${element.mensaje}</span>  </br>`;
             });
             parrafo.innerHTML = inner;
         });
@@ -44,7 +53,7 @@
             let inner = ``;
             data.forEach(element => {
                 let status = element.active ? "(conectado)" : "(desconectado)";
-                inner += `<li><b>${element.email}:</b> ${status}</li>`;
+                inner += `<li><img src=${element.avatar} width="30px" height="30px"><b>${element.id}:</b> ${status}</li>`;
             });
             user_list.innerHTML = inner;
         });
@@ -53,7 +62,7 @@
     button_chat.addEventListener("click", e => {
         let date = new Date();
         let sendMessagge = {
-            ...student,
+            author,
             mensaje: input.value,
             date: date.toLocaleString("en-US")
         }
