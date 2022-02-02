@@ -26,7 +26,7 @@ class Socket {
                 console.log(`Usuario conectado ${socket.id}`)
                 socket.emit("init", this.backOutInfo)
                 socket.on("infoProductos", async item => {
-                    contenedor.addProductos(item)
+                    await contenedor.addProductos(item)
                     let res = await firebaseDB.collection('productos').get();
                     let data = res.docs;
                     let items = []

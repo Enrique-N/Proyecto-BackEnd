@@ -1,15 +1,16 @@
 <div id="login_contenedor" class="text-center my-4 mx-5" style="background-color: rgba(145, 191, 209, 0.678);">
     <h1 style="color: blue;">Login de Usuario</h1>
-    <form id="signIn" method="post" action="/login/signin">
-        <label>Nombre</label>
-        <input type=" text" name="nombre">
-        <button type="submit" class="btn btn-primary my-2">Submit</button>
+    <form class="form" action="/signin" method="post" role="form" autocomplete="off" style="margin: 0 35%;">
+        <div class="form-group my-2">
+            <input id="username" name='username' placeholder="username" class="form-control" type="username" required>
+        </div>
+        <div class="form-group">
+            <input id="password" name='password' placeholder="password" class="form-control" type="password" required>
+        </div>
+        <div class="form-group">
+            <input class="btn btn-success my-3" type="submit" value="Login">
+        </div>
     </form>
+    <hr>
+    <a href="/signin/registro" class="btn btn-primary mb-2">Registrate</a>
 </div>
-
-
-
-
-<script>
-
-</script>

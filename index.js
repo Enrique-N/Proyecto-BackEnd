@@ -16,12 +16,16 @@ let logInRoute = require("./routes/LogIn/index");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
-app.use("/", mainRoute);
+app.use("/login", mainRoute);
 app.use("/productos-test", fakerRoute);
-app.use("/login", logInRoute)
+app.use("/signin", logInRoute)
 
 app.set("views", path.join(__dirname, "views", "ejs"));
 app.set("view engine", "ejs");
+
+app.get("/", (req, res) => {
+    res.redirect("/signin")
+})
 
 socket.init()
 
