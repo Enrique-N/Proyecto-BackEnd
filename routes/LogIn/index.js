@@ -3,6 +3,7 @@ let loginRoute = express.Router();
 let expressSession = require('express-session');
 let passport = require('passport');
 let passportStrategy = require('passport-local').Strategy;
+let bcrypt = require('bcrypt');
 let usuarios = [];
 
 loginRoute.use(express.urlencoded({ extended: true }));
@@ -13,7 +14,9 @@ passport.use('signin', new passportStrategy((username, password, done) => {
 
     if (!user) return done(null, false);
 
-    if (user.password != password) return done(null, false);
+    if (bcrypt.compareSync(user.password, password)) return done(null, false);
+
+    //if (user.password != password) 
 
     return done(null, user);
 }));
@@ -24,7 +27,7 @@ passport.use('register', new passportStrategy((username, password, done) => {
 
     let user = {
         username,
-        password
+        password: bcrypt.hashSync(password, 10)
     }
     usuarios.push(user);
     return done(null, user);
