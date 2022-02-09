@@ -14,9 +14,7 @@ passport.use('signin', new passportStrategy((username, password, done) => {
 
     if (!user) return done(null, false);
 
-    if (bcrypt.compareSync(user.password, password)) return done(null, false);
-
-    //if (user.password != password) 
+    if (!bcrypt.compareSync(password, user.password)) return done(null, false);
 
     return done(null, user);
 }));
