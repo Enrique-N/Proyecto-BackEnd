@@ -10,7 +10,7 @@ let fakerRoute = require("./utils/faker/index")
 let logInRoute = require("./routes/LogIn/index");
 let infoRoute = require("./routes/Info/index");
 let randomRoute = require('./routes/Random')
-let config = require("./config/index")
+let config = require("./config/index");
 
 //app.use(cors(config.cors));
 app.use(express.json());

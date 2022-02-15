@@ -1,20 +1,27 @@
 let express = require('express')
 let randomRoute = express.Router();
+const { fork } = require('child_process');
+const forked = fork('./routes/Random/child_process.js')
 
 
-randomRoute.get("/:num", (req, res) => {
-    let { num } = req.params;
-    let arr = []
-    let repetidos = {}
-    for (let i = 1; i <= num; i++) {
-        let random = Math.floor(Math.random() * (num - 1) + 1)
-        arr.push(random)
+
+randomRoute.get("/", (req, res) => {
+    let cant = req.query.cant;
+    if (cant) {
+        forked.send(cant);
+        forked.once('message', data => {
+            let repetidos = Object.entries(data)
+            res.render('randoms', { obj: repetidos })
+        })
+    } else {
+        forked.send(2000000);
+        forked.once('message', data => {
+            let repetidos = Object.entries(data)
+            res.render('randoms', { obj: repetidos })
+        })
     }
-    arr.forEach(ele => {
-        repetidos[ele] = (repetidos[ele] || 0) + 1;
-    })
-    let convert = Object.entries(repetidos)
-    res.render("randoms", { obj: convert })
 })
+
+
 
 module.exports = randomRoute;
