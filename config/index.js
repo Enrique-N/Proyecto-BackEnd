@@ -14,5 +14,5 @@ if (argv.puerto !== 8080) {
 }
 
 module.exports = {
-    PORT: process.env.PORT || 8080
+    PORT: 8080
 }
