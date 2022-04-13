@@ -7,7 +7,7 @@ let Socket = require("./routes/Chat/chat")
 let socket = new Socket(httpServer)
 let mainRoute = require('./routes/Chat/index')
 let logInRoute = require("./routes/LogIn/index");
-let PORT = 8080;
+let PORT = 3000;
 
 //app.use(cors(config.cors));
 app.use(express.json());
