@@ -28,11 +28,13 @@ class Contenedor {
     } async addProductos(item) {
         try {
             this.contador++
-            let productos = firebaseDB.collection('productos');
+            let productos = firebaseDB.collection('productos')
             await productos.doc().set({
                 ...item,
-                id: this.contador
-            })
+                id: this.contador,
+                date: new Date().toLocaleString()
+            });
+            return productos;
         } catch (error) {
             console.log(error);
         }
