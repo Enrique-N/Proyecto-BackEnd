@@ -37,7 +37,7 @@ passport.use('register', new passportStrategy({ passReqToCallback: true }, async
         password: bcrypt.hashSync(password, 10),
         phone: req.body.phone,
         edad: req.body.edad,
-        avatar: req.body.avatar
+        avatar: req.body.imgdata
     }
     let users = firebaseDB.collection('usuarios');
     await users.doc().set(user)

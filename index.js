@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path")
 const app = express();
+let bodyParser = require('body-parser');
 let { Server: HttpServer } = require("http")
 const httpServer = new HttpServer(app);
 let Socket = require("./routes/Chat/chat")
@@ -10,8 +11,8 @@ let logInRoute = require("./routes/LogIn/index");
 const PORT = process.env.PORT || 8080;
 
 //app.use(cors(config.cors));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 app.use("/login", mainRoute);
 app.use("/signin", logInRoute);
 
