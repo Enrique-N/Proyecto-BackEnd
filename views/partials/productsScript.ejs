@@ -5,12 +5,13 @@
     let inputThumbail = document.getElementById("thumb")
     let button = document.getElementById("button_listen")
     let addHeader = true;
+    let img54 = null;
     button.addEventListener("click", handleEvent)
     function handleEvent(e) {
         let res = {
             tittle: inputTittle.value,
             precio: inputPrecio.value,
-            thumbail: inputThumbail.value
+            thumbail: img54
         }
         socket.emit("infoProductos", res)
         document.getElementById("form").reset()
@@ -94,5 +95,19 @@
             contenedor.innerHTML = addBody;
         }
     })
+
+    function readFile() {
+        if (this.files && this.files[0]) {
+
+            const FR = new FileReader();
+            FR.addEventListener("load", function (e) {
+                img54 = e.target.result;
+            });
+
+            FR.readAsDataURL(this.files[0]);
+        }
+    }
+
+    document.getElementById("thumb").addEventListener("change", readFile);
 
 </script>
