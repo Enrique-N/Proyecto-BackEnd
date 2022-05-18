@@ -7,6 +7,15 @@
     let addHeader = true;
     let img54 = null;
     button.addEventListener("click", handleEvent)
+
+    function textChange() {
+        if (inputTittle.value.trim() !== "" && inputPrecio.value.trim() !== "") {
+            button.removeAttribute('disabled');
+        } else {
+            button.setAttribute('disabled', "true");
+        }
+    }
+
     function handleEvent(e) {
         let res = {
             tittle: inputTittle.value,
